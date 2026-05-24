@@ -1,0 +1,61 @@
+.cursor{
+  display:inline-block;
+  width:9px;
+  height:1em;
+  background:var(--ink);
+  vertical-align:-2px;
+  margin-left:4px;
+  animation:blink 1s steps(2) infinite;
+}
+
+@keyframes blink{
+  50%{opacity:0}
+}
+
+.panel{
+  grid-area:1/1;
+  visibility:hidden;
+  opacity:0;
+  pointer-events:none;
+  transform-origin:bottom right;
+}
+
+.panel.active{
+  visibility:visible;
+  opacity:1;
+  pointer-events:auto;
+  z-index:1;
+}
+
+.panel.peeling{
+  visibility:visible;
+  opacity:1;
+  pointer-events:none;
+  z-index:3;
+  background:var(--paper);
+  box-shadow:-6px 6px 0 rgba(0,0,0,.03), -14px 16px 22px -8px rgba(0,0,0,.22);
+  padding:0;
+  animation:peelOff 620ms cubic-bezier(.45,.05,.6,.95) forwards;
+}
+
+@keyframes peelOff{
+  0%{transform:translate(0,0) rotate(0deg); opacity:1}
+  35%{transform:translate(2%, -2%) rotate(2deg) scale(1.005); opacity:1}
+  100%{transform:translate(70%, -38%) rotate(14deg) scale(.94); opacity:0}
+}
+
+.panel.entering{
+  animation:settle 380ms ease-out both;
+}
+
+@keyframes settle{
+  0%{transform:translateY(-2px); opacity:.85}
+  100%{transform:translateY(0); opacity:1}
+}
+
+@media (prefers-reduced-motion: reduce){
+  .panel.peeling,
+  .panel.entering{animation:none !important}
+  .panel.peeling{opacity:0 !important}
+  .cursor{animation:none}
+}
