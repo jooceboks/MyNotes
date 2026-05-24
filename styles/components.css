@@ -193,7 +193,6 @@ b{font-weight:700}
   transition:color 80ms, border-color 80ms;
 }
 
-.proj .name:hover{color:var(--red); border-bottom-color:var(--red)}
 .proj .tag{font-size:11px; color:var(--ink-soft); letter-spacing:.06em; text-transform:uppercase; font-weight:700}
 .proj p{font-size:13px; line-height:1.55; margin:6px 0 0}
 .proj p b{font-weight:700}
