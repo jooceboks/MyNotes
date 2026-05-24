@@ -139,6 +139,11 @@ h1.title{
   text-underline-offset:3px;
 }
 
+.ink-red{color:var(--red)}
+
+/* Ensure .ink-red wins for nested elements (eg. <b>) inside list items */
+.panel li .ink-red, .panel li .ink-red * { color: var(--red); }
+
 .hl{
   background:linear-gradient(180deg, transparent 55%, rgba(178,34,34,.18) 55% 92%, transparent 92%);
   padding:0 2px;
@@ -364,3 +369,14 @@ b{font-weight:700}
 
 .footer a:hover{color:var(--red); border-bottom-color:var(--red)}
 .footer .bullet{color:var(--ink-soft);font-weight:400}
+
+@media (max-width:680px){
+  .tabs{display:grid;grid-template-columns:repeat(3,1fr);margin:0 -18px 16px}
+  .tab{border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);font-size:10px;padding:9px 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tab:nth-child(3n){border-right:none}
+  .tab:nth-child(n+4){border-bottom:none}
+  .tab .n{display:none}
+  .skills{grid-template-columns:1fr}
+  .design-cred{grid-template-columns:1fr}
+  .meta{grid-template-columns:1fr}
+}
