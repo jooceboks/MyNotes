@@ -1,6 +1,8 @@
-const TAB_ORDER = ['home', 'about', 'coding', 'design', 'leadership', 'skills'];
+const TAB_ORDER = ['home', 'about', 'coding', 'creatives', 'leadership', 'skills'];
 const TAB_ALIASES = {
   code: 'coding',
+  creative: 'creatives',
+  design: 'creatives',
   lead: 'leadership',
 };
 
@@ -89,7 +91,7 @@ async function loadPanels() {
       return;
     }
 
-    const response = await fetch(source);
+    const response = await fetch(source + '?v=' + Date.now());
     if (!response.ok) {
       throw new Error(`Unable to load ${source}: ${response.status}`);
     }
