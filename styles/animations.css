@@ -13,7 +13,10 @@
 }
 
 .panel{
-  grid-area:1/1;
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
   visibility:hidden;
   opacity:0;
   pointer-events:none;
@@ -21,6 +24,7 @@
 }
 
 .panel.active{
+  position:relative;
   visibility:visible;
   opacity:1;
   pointer-events:auto;

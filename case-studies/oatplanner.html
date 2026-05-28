@@ -1,0 +1,886 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Case Study — Oat Planner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --paper:#FAF6F1;
+      --ink:#2B2B2B;
+      --ink-soft:#8C8478;
+      --red:#B22222;
+      --rule:#D6CFC5;
+      --desk:#DDD5C8;
+    }
+
+    *{margin:0;padding:0;box-sizing:border-box}
+
+    body{
+      font-family:'Courier Prime',monospace;
+      background:var(--desk);
+      color:var(--ink);
+      line-height:1.6;
+      min-height:100vh;
+      padding:30px 20px 60px;
+    }
+
+    .back-nav{
+      max-width:860px;
+      margin:0 auto 14px;
+      text-align:center;
+    }
+
+    .back{
+      font-size:12px;
+      font-weight:700;
+      color:var(--red);
+      text-decoration:none;
+      letter-spacing:.04em;
+      display:inline-block;
+    }
+
+    .back:hover{text-decoration:underline;text-decoration-style:dotted}
+
+    .header-note{
+      background-color:#FAFAF8;
+      background-image:repeating-linear-gradient(
+        180deg,
+        transparent 0px, transparent 23px,
+        rgba(100,140,180,.12) 23px, rgba(100,140,180,.12) 24px
+      );
+      background-size:100% 24px;
+      background-position:0 18px;
+      padding:24px 32px 20px;
+      border-radius:1px;
+      box-shadow:
+        1px 1px 2px rgba(0,0,0,.18),
+        2px 3px 8px rgba(0,0,0,.14),
+        4px 6px 14px rgba(0,0,0,.08);
+      text-align:center;
+      position:relative;
+      margin-bottom:24px;
+      transform:rotate(-0.3deg);
+      z-index:1;
+    }
+
+    /* red pushpin on header */
+    .header-note::before{
+      content:"";
+      position:absolute;
+      top:-6px;
+      left:50%;
+      transform:translateX(-50%);
+      width:16px;
+      height:16px;
+      border-radius:50%;
+      background:
+        radial-gradient(circle at 38% 32%, rgba(255,255,255,.5) 0%, transparent 45%),
+        radial-gradient(circle at 50% 50%, #D44 0%, #B22222 70%, #8B1A1A 100%);
+      box-shadow:
+        0 1px 1px rgba(0,0,0,.3),
+        0 2px 4px rgba(0,0,0,.2),
+        inset 0 -1px 2px rgba(0,0,0,.2);
+      z-index:3;
+    }
+
+    /* folded corner on header note */
+    .header-note::after{
+      content:"";
+      position:absolute;
+      bottom:0;
+      right:0;
+      width:20px;
+      height:20px;
+      background:linear-gradient(135deg, transparent 50%, rgba(0,0,0,.05) 50%, rgba(0,0,0,.02) 100%);
+    }
+
+    .hero-tag{
+      font-size:10px;
+      text-transform:uppercase;
+      letter-spacing:.14em;
+      color:var(--red);
+      font-weight:700;
+      margin-bottom:6px;
+      display:block;
+    }
+
+    .header-note h1{font-size:26px;font-weight:700;margin:0 0 4px}
+    .header-note .tagline{font-size:13px;color:var(--ink-soft);font-style:italic;margin-bottom:8px}
+
+    .role-bar{
+      font-size:11px;
+      color:var(--ink-soft);
+      letter-spacing:.04em;
+    }
+
+    .role-bar b{color:var(--ink)}
+
+    /* ——— CORKBOARD ——— */
+    .board-frame{
+      max-width:880px;
+      margin:0 auto;
+      /* warm golden cork */
+      background:#C6A96C;
+      background-image:
+        /* large warm/cool patches */
+        radial-gradient(ellipse at 10% 15%, rgba(160,120,60,.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 90% 25%, rgba(0,0,0,.06) 0%, transparent 40%),
+        radial-gradient(ellipse at 40% 85%, rgba(180,140,80,.12) 0%, transparent 45%),
+        radial-gradient(ellipse at 70% 55%, rgba(255,230,180,.08) 0%, transparent 35%),
+        /* heavy noise grain for cork fiber */
+        url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='c'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='6' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23c)' opacity='.14'/%3E%3C/svg%3E"),
+        /* speckle dots */
+        url("data:image/svg+xml,%3Csvg width='16' height='16' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='3' cy='4' r='1' fill='%23000' opacity='.04'/%3E%3Ccircle cx='11' cy='2' r='.7' fill='%23000' opacity='.05'/%3E%3Ccircle cx='7' cy='12' r='.9' fill='%23fff' opacity='.03'/%3E%3Ccircle cx='14' cy='9' r='.6' fill='%23000' opacity='.03'/%3E%3Ccircle cx='1' cy='14' r='.5' fill='%23fff' opacity='.04'/%3E%3C/svg%3E");
+      padding:40px 36px 36px;
+      /* thin light pine frame */
+      border:5px solid;
+      border-color:#D4B98A #B89B6A #A88B5A #C4A97A;
+      border-radius:2px;
+      box-shadow:
+        inset 0 2px 8px rgba(0,0,0,.12),
+        inset 0 -1px 4px rgba(255,255,255,.06),
+        0 4px 20px rgba(0,0,0,.3),
+        0 1px 4px rgba(0,0,0,.12);
+      position:relative;
+    }
+
+    /* inner bevel highlight */
+    .board-frame::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      box-shadow:inset 1px 1px 0 rgba(255,255,255,.08), inset -1px -1px 0 rgba(0,0,0,.06);
+      pointer-events:none;
+      z-index:0;
+    }
+
+    /* ——— GRID (organic offsets per-child) ——— */
+    .sticky-board{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:24px 18px;
+      padding:0;
+      position:relative;
+      z-index:1;
+    }
+
+    /* ——— BASE NOTE ——— */
+    .sticky{
+      padding:20px 16px 16px;
+      border-radius:1px;
+      cursor:pointer;
+      box-shadow:
+        0 1px 1px rgba(0,0,0,.15),
+        1px 2px 4px rgba(0,0,0,.12),
+        3px 4px 10px rgba(0,0,0,.08);
+      transition:transform 150ms ease,box-shadow 150ms ease;
+      position:relative;
+      min-height:135px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+    }
+
+    /* default pushpin (black) */
+    .sticky::before{
+      content:"";
+      position:absolute;
+      top:-5px;
+      left:50%;
+      transform:translateX(-50%);
+      width:13px;
+      height:13px;
+      border-radius:50%;
+      background:
+        radial-gradient(circle at 38% 30%, rgba(255,255,255,.35) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #555 0%, #333 60%, #1a1a1a 100%);
+      box-shadow:0 1px 2px rgba(0,0,0,.4), 0 2px 4px rgba(0,0,0,.15);
+      z-index:3;
+    }
+
+    /* dog-ear fold */
+    .sticky::after{
+      content:"";
+      position:absolute;
+      bottom:0;right:0;
+      width:14px;height:14px;
+      background:linear-gradient(135deg, transparent 48%, rgba(0,0,0,.07) 48%, rgba(0,0,0,.02) 100%);
+    }
+
+    .sticky:hover{
+      transform:scale(1.04) rotate(0deg) translateY(-2px) !important;
+      box-shadow:
+        0 1px 2px rgba(0,0,0,.1),
+        3px 6px 14px rgba(0,0,0,.16),
+        6px 10px 24px rgba(0,0,0,.1);
+      z-index:2;
+    }
+
+    .sticky-header{display:flex;align-items:baseline;gap:4px;margin-bottom:3px}
+    .sticky-icon{font-size:12px;line-height:1;flex-shrink:0}
+    .sticky-title{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink)}
+    .sticky-hint{font-size:10px;color:var(--ink-soft);line-height:1.4}
+    .sticky-corner{position:absolute;bottom:6px;right:8px;font-size:9px;color:var(--ink-soft);font-weight:700;letter-spacing:.04em}
+
+    /* ——— NATURAL PAPER COLORS ——— */
+    /* white paper */
+    .sticky--yellow{background:#FAFAF5}
+    /* lined paper (cream) */
+    .sticky--coral{
+      background:#FAF8F2;
+      background-image:repeating-linear-gradient(
+        180deg,
+        transparent 0px, transparent 19px,
+        rgba(100,140,180,.13) 19px, rgba(100,140,180,.13) 20px
+      );
+      background-size:100% 20px;
+      background-position:0 16px;
+    }
+    /* kraft brown */
+    .sticky--blue{background:#C4A97A;color:var(--paper)}
+    .sticky--blue .sticky-title{color:var(--paper)}
+    .sticky--blue .sticky-hint{color:rgba(250,246,241,.7)}
+    .sticky--blue .sticky-corner{color:rgba(250,246,241,.5)}
+    /* pale yellow post-it */
+    .sticky--green{background:#FFF8B8}
+    /* lined paper */
+    .sticky--lavender{
+      background:#FAFAF8;
+      background-image:repeating-linear-gradient(
+        180deg,
+        transparent 0px, transparent 19px,
+        rgba(100,140,180,.15) 19px, rgba(100,140,180,.15) 20px
+      );
+      background-size:100% 20px;
+      background-position:0 16px;
+    }
+    /* aged/stained paper */
+    .sticky--peach{
+      background:#EDE0C8;
+      background-image:
+        radial-gradient(ellipse at 70% 30%, rgba(160,120,60,.1) 0%, transparent 60%),
+        url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='a'%3E%3CfeTurbulence baseFrequency='.5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23a)' opacity='.05'/%3E%3C/svg%3E");
+    }
+    /* graph paper */
+    .sticky--mint{
+      background:#F6F8F4;
+      background-image:
+        repeating-linear-gradient(0deg, transparent 0px, transparent 15px, rgba(100,160,120,.12) 15px, rgba(100,160,120,.12) 16px),
+        repeating-linear-gradient(90deg, transparent 0px, transparent 15px, rgba(100,160,120,.12) 15px, rgba(100,160,120,.12) 16px);
+      background-size:16px 16px;
+    }
+    /* lined paper */
+    .sticky--pink{
+      background:#FAFAF8;
+      background-image:repeating-linear-gradient(
+        180deg,
+        transparent 0px, transparent 19px,
+        rgba(180,100,100,.12) 19px, rgba(180,100,100,.12) 20px
+      );
+      background-size:100% 20px;
+      background-position:0 16px;
+    }
+
+    /* ——— PER-NOTE: pin colors, positions, offsets ——— */
+    /* 1: white paper — tape strip diagonal */
+    .sticky:nth-child(1){transform:rotate(-1.8deg) translate(-4px, 6px)}
+    .sticky:nth-child(1)::before{
+      width:44px;height:14px;border-radius:1px;
+      left:12px;top:-6px;transform:rotate(8deg);
+      background:linear-gradient(180deg, rgba(255,255,255,.35) 0%, rgba(240,230,210,.25) 100%);
+      border:none;
+      box-shadow:0 1px 2px rgba(0,0,0,.08);
+    }
+
+    /* 2: cream — blue pin top-right */
+    .sticky:nth-child(2){transform:rotate(2.2deg) translate(6px, -8px)}
+    .sticky:nth-child(2)::before{
+      left:auto;right:16px;transform:none;
+      background:
+        radial-gradient(circle at 38% 30%, rgba(255,255,255,.4) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #5B8DEF 0%, #3D6FD4 60%, #2A52A0 100%);
+    }
+
+    /* 3: kraft — paper clip (top-right) */
+    .sticky:nth-child(3){transform:rotate(-0.8deg) translate(2px, 12px)}
+    .sticky:nth-child(3)::before{
+      width:10px;height:22px;border-radius:5px 5px 2px 2px;
+      left:auto;right:14px;top:-8px;transform:none;
+      background:none;
+      border:2px solid #AAA;
+      box-shadow:0 1px 2px rgba(0,0,0,.15);
+    }
+
+    /* 4: yellow post-it — green pin center */
+    .sticky:nth-child(4){transform:rotate(1.5deg) translate(-2px, -4px)}
+    .sticky:nth-child(4)::before{
+      background:
+        radial-gradient(circle at 38% 30%, rgba(255,255,255,.45) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #4CAF50 0%, #388E3C 60%, #2E7D32 100%);
+    }
+
+    /* 5: lined paper — tape strip diagonal */
+    .sticky:nth-child(5){transform:rotate(1.2deg) translate(8px, 4px)}
+    .sticky:nth-child(5)::before{
+      width:42px;height:14px;border-radius:1px;
+      left:50%;top:-6px;transform:translateX(-50%) rotate(-5deg);
+      background:linear-gradient(180deg, rgba(255,255,255,.35) 0%, rgba(240,230,210,.25) 100%);
+      border:none;
+      box-shadow:0 1px 2px rgba(0,0,0,.08);
+    }
+
+    /* 6: aged paper — paper clip top-right */
+    .sticky:nth-child(6){transform:rotate(-2.4deg) translate(-6px, -6px)}
+    .sticky:nth-child(6)::before{
+      width:10px;height:22px;border-radius:5px 5px 2px 2px;
+      left:auto;right:12px;top:-8px;transform:none;
+      background:none;
+      border:2px solid #B8976A;
+      box-shadow:0 1px 2px rgba(0,0,0,.12);
+    }
+
+    /* 7: index card — white pin top-center */
+    .sticky:nth-child(7){transform:rotate(-0.5deg) translate(3px, 10px)}
+    .sticky:nth-child(7)::before{
+      background:
+        radial-gradient(circle at 38% 30%, rgba(255,255,255,.7) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #F5F5F5 0%, #DDD 60%, #BBB 100%);
+    }
+
+    /* 8: warm white — red pin top-right */
+    .sticky:nth-child(8){transform:rotate(1.8deg) translate(-4px, -10px)}
+    .sticky:nth-child(8)::before{
+      left:auto;right:18px;transform:none;
+      background:
+        radial-gradient(circle at 38% 30%, rgba(255,255,255,.45) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #E53935 0%, #C62828 60%, #8B1A1A 100%);
+    }
+
+    .modal-overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.5);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:100;
+      padding:20px;
+    }
+
+    .modal-overlay.open{display:flex}
+
+    .modal{
+      background:var(--paper);
+      max-width:640px;
+      width:100%;
+      max-height:80vh;
+      overflow-y:auto;
+      padding:32px 36px;
+      border-radius:4px;
+      box-shadow:0 8px 30px rgba(0,0,0,.2);
+      position:relative;
+    }
+
+    .modal-close{
+      position:absolute;
+      top:14px;
+      right:16px;
+      background:none;
+      border:none;
+      font:inherit;
+      font-size:18px;
+      font-weight:700;
+      color:var(--ink-soft);
+      cursor:pointer;
+      padding:4px 8px;
+    }
+
+    .modal-close:hover{color:var(--red)}
+
+    .modal-nav{
+      position:absolute;
+      top:50%;
+      transform:translateY(-50%);
+      background:var(--paper);
+      border:1px solid var(--rule);
+      border-radius:50%;
+      width:36px;
+      height:36px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font:inherit;
+      font-size:16px;
+      font-weight:700;
+      color:var(--ink);
+      cursor:pointer;
+      box-shadow:0 2px 6px rgba(0,0,0,.12);
+      z-index:101;
+    }
+
+    .modal-nav:hover{color:var(--red);border-color:var(--red)}
+    .modal-nav--prev{left:-48px}
+    .modal-nav--next{right:-48px}
+
+    .modal h2{
+      font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--ink);
+      border-bottom:1px solid var(--ink);padding-bottom:4px;display:inline-block;margin:0 0 14px;
+    }
+    .modal h2::before{content:"// ";color:var(--red);font-weight:700}
+
+    .modal h3{font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink);margin:16px 0 6px}
+    .modal h3::before{content:"> ";color:var(--red)}
+
+    .modal p{font-size:13px;line-height:1.65;margin:0 0 10px}
+
+    .hl{background:linear-gradient(180deg,transparent 55%,rgba(178,34,34,.18) 55% 92%,transparent 92%);padding:0 2px;font-weight:700}
+    .underline-red{text-decoration:underline;text-decoration-color:var(--red);text-decoration-thickness:1.5px;text-underline-offset:3px}
+    .red{color:var(--red)}
+    .red-comment{color:var(--red);font-weight:700;letter-spacing:.04em;font-size:12px}
+
+    .competitor-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:0 0 12px}
+    .competitor{border:1px solid var(--rule);border-radius:6px;padding:8px 10px;background:rgba(0,0,0,.03)}
+    .competitor .name{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+    .competitor .pros{font-size:10.5px;color:var(--ink);margin-bottom:2px}
+    .competitor .cons{font-size:10.5px;color:var(--red)}
+
+    .persona{border:1px solid var(--rule);border-radius:6px;padding:12px 14px;background:rgba(0,0,0,.03);margin:0 0 8px}
+    .persona-header{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:4px;flex-wrap:wrap}
+    .persona-name{font-size:13px;font-weight:700;color:var(--ink)}
+    .persona-meta{font-size:10.5px;color:var(--ink-soft);letter-spacing:.04em}
+    .persona p{font-size:12px;line-height:1.55;margin:0 0 4px;color:var(--ink-soft)}
+    .persona p b{color:var(--ink)}
+    .persona-quote{font-size:11.5px;font-style:italic;color:var(--red);border-left:2px solid var(--red);padding-left:10px;margin-top:6px}
+
+    .decision-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 12px}
+    .decision{border:1px solid var(--rule);border-radius:6px;padding:10px 12px;background:rgba(255,255,255,.3)}
+    .decision .dt{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--red);font-weight:700;margin-bottom:3px}
+    .decision .dd{font-size:12px;line-height:1.5;color:var(--ink)}
+    .decision .dd b{font-weight:700}
+
+    .views-table{width:100%;border-collapse:collapse;font-size:11.5px;margin:0 0 12px}
+    .views-table th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft);font-weight:700;padding:5px 6px;border-bottom:1px solid var(--ink)}
+    .views-table td{padding:5px 6px;border-bottom:1px solid var(--rule);color:var(--ink)}
+    .views-table td b{font-weight:700}
+
+    .check-list{list-style:none;padding:0;margin:0 0 12px}
+    .check-list li{font-size:12.5px;line-height:1.55;margin:0 0 6px;padding-left:20px;position:relative}
+    .check-list li::before{content:"[x]";position:absolute;left:0;top:0;font-size:11px;font-weight:700;color:var(--ink)}
+    .check-list li b{font-weight:700}
+
+    .feedback{border-left:2px solid var(--rule);padding:8px 12px;margin:0 0 8px;background:rgba(0,0,0,.02);border-radius:0 6px 6px 0}
+    .feedback p{font-size:12px;line-height:1.55;margin:0;font-style:italic;color:var(--ink-soft)}
+    .feedback .source{font-size:10.5px;color:var(--red);font-weight:700;margin-top:3px;font-style:normal}
+
+    .mockup{margin:14px 0;border-radius:6px;overflow:hidden;border:1px solid var(--rule);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+    .mockup img{width:100%;display:block}
+    .mockup-caption{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-soft);font-weight:700;text-align:center;padding:6px 0 2px}
+    .mockup-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+    .mockup-row .mockup{margin:0}
+    .mockup-trio{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:14px 0}
+    .mockup-trio .mockup{margin:0}
+    @media(max-width:680px){.mockup-row,.mockup-trio{grid-template-columns:1fr}}
+
+    .section-content{display:none}
+
+    .page-footer{
+      max-width:860px;
+      margin:28px auto 0;
+      text-align:center;
+      font-size:12px;
+      color:var(--red);
+      font-weight:700;
+      letter-spacing:.04em;
+    }
+
+    @media(max-width:900px){
+      .board-frame{margin:0 10px;padding:30px 22px 26px}
+      .sticky-board{grid-template-columns:repeat(3,1fr);gap:18px 14px}
+      /* flatten offsets so nothing clips */
+      .sticky:nth-child(n){transform:rotate(0deg) translate(0,0) !important}
+      .sticky:nth-child(1){transform:rotate(-1.5deg) !important}
+      .sticky:nth-child(2){transform:rotate(1deg) !important}
+      .sticky:nth-child(3){transform:rotate(-0.5deg) !important}
+      .sticky:nth-child(4){transform:rotate(1.2deg) !important}
+      .sticky:nth-child(5){transform:rotate(0.8deg) !important}
+      .sticky:nth-child(6){transform:rotate(-1deg) !important}
+      .sticky:nth-child(7){transform:rotate(-0.3deg) !important}
+      .sticky:nth-child(8){transform:rotate(1.5deg) !important}
+    }
+
+    @media(max-width:680px){
+      .board-frame{padding:22px 16px 18px;border-width:4px}
+      .sticky-board{grid-template-columns:1fr 1fr;gap:14px}
+      .sticky{min-height:110px;padding:14px 12px 12px}
+      .sticky-icon{font-size:20px}
+      .role-bar{display:flex;flex-direction:column;gap:2px}
+      .role-sep{display:none}
+      .modal{padding:24px 20px;max-height:85vh}
+      .modal-nav--prev{left:8px;top:auto;bottom:16px;transform:none}
+      .modal-nav--next{right:8px;top:auto;bottom:16px;transform:none}
+      .competitor-grid{grid-template-columns:1fr}
+      .decision-grid{grid-template-columns:1fr}
+    }
+
+    @media(max-width:400px){
+      .sticky-board{grid-template-columns:1fr;gap:10px}
+      .sticky{transform:none !important}
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="back-nav">
+    <a class="back" href="../index.html#creatives">← Back to portfolio</a>
+  </nav>
+
+  <div class="board-frame">
+  <div class="header-note">
+    <span class="hero-tag">UI/UX Case Study</span>
+    <h1>Oat Planner</h1>
+    <p class="tagline">A better grain of thought. Wholesome planning.</p>
+    <div class="role-bar">
+      <span class="role-item"><b>Role:</b> Designer + Developer</span>
+      <span class="role-sep">&nbsp;·&nbsp;</span>
+      <span class="role-item"><b>Timeline:</b> March 2026 — Present</span>
+      <span class="role-sep">&nbsp;·&nbsp;</span>
+      <span class="role-item"><b>Platform:</b> Web (responsive mobile)</span>
+    </div>
+  </div>
+  <div class="sticky-board">
+    <div class="sticky sticky--yellow" data-index="0">
+      <div>
+        <div class="sticky-header"><span class="sticky-icon">🔍</span><span class="sticky-title">The Problem</span></div>
+        <div class="sticky-hint">Why existing planners fail students & young professionals</div>
+      </div>
+      <span class="sticky-corner">01</span>
+    </div>
+    <div class="sticky sticky--coral" data-index="1">
+      <div>
+        <div class="sticky-header"><span class="sticky-title">Competitive Analysis</span></div>
+        <div class="sticky-hint">Google Cal vs Notion vs Apple Cal — what's missing</div>
+      </div>
+      <span class="sticky-corner">02</span>
+    </div>
+    <div class="sticky sticky--blue" data-index="2">
+      <div>
+        <div class="sticky-header"><span class="sticky-icon">👥</span><span class="sticky-title">User Personas</span></div>
+        <div class="sticky-hint">Maya, Jordan & Alex — three different needs, one app</div>
+      </div>
+      <span class="sticky-corner">03</span>
+    </div>
+    <div class="sticky sticky--green" data-index="3">
+      <div>
+        <div class="sticky-header"><span class="sticky-icon">🔄</span><span class="sticky-title">Design Process</span></div>
+        <div class="sticky-hint">BOLDER framework in action — brainstorm to refine</div>
+      </div>
+      <span class="sticky-corner">04</span>
+    </div>
+    <div class="sticky sticky--lavender" data-index="4">
+      <div>
+        <div class="sticky-header"><span class="sticky-icon">✏️</span><span class="sticky-title">Design Decisions</span></div>
+        <div class="sticky-hint">Views, drag-and-drop, swipe nav, AI chat, keyboard shortcuts</div>
+      </div>
+      <span class="sticky-corner">05</span>
+    </div>
+    <div class="sticky sticky--mint" data-index="5">
+      <div>
+        <div class="sticky-header"><span class="sticky-icon">♿</span><span class="sticky-title">Accessibility</span></div>
+        <div class="sticky-hint">Contrast, keyboard nav, dark mode, responsive adaptations</div>
+      </div>
+      <span class="sticky-corner">06</span>
+    </div>
+    <div class="sticky sticky--peach" data-index="6">
+      <div>
+        <div class="sticky-header"><span class="sticky-icon">💬</span><span class="sticky-title">User Feedback</span></div>
+        <div class="sticky-hint">Real quotes from beta testers — what worked, what didn't</div>
+      </div>
+      <span class="sticky-corner">07</span>
+    </div>
+    <div class="sticky sticky--pink" data-index="7">
+      <div>
+        <div class="sticky-header"><span class="sticky-icon">🔁</span><span class="sticky-title">Iteration</span></div>
+        <div class="sticky-hint">Cursor states, mobile views, drag reorder — what changed & why</div>
+      </div>
+      <span class="sticky-corner">08</span>
+    </div>
+  </div>
+  </div>
+
+  <p class="page-footer">/* use arrow keys to navigate between sections */</p>
+
+  <!-- Hidden section content for modal population -->
+  <div class="section-content" id="section-0">
+    <h2>The Problem</h2>
+    <p>Most planning tools are either <span class="hl">too simple or too overwhelming</span>. Google Calendar is functional but clinical and ugly. Notion has a steep learning curve. Paper planners can't be searched.</p>
+    <p>Students and young professionals end up stitching together 3-4 apps — a calendar here, tasks there, habits somewhere else — and nothing talks to each other.</p>
+    <p>The result: things fall through the cracks, planning itself becomes a chore, and <span class="underline-red">people stop doing it</span>.</p>
+    <p class="red-comment">/* the tool meant to reduce stress was causing it */</p>
+    <div class="mockup-caption">The answer: one calm, unified space</div>
+    <div class="mockup"><img src="oat-assets/landing.png" alt="Oat Planner landing page — warm, minimal hero"></div>
+  </div>
+
+  <div class="section-content" id="section-1">
+    <h2>Competitive Analysis</h2>
+    <div class="competitor-grid">
+      <div class="competitor">
+        <div class="name">Google Calendar</div>
+        <div class="pros">+ Reliable, syncs everywhere</div>
+        <div class="cons">- Clinical UI, no tasks/habits/goals, limited views</div>
+      </div>
+      <div class="competitor">
+        <div class="name">Notion</div>
+        <div class="pros">+ Powerful, flexible, great for notes</div>
+        <div class="cons">- Huge learning curve, not a real calendar, slow on mobile</div>
+      </div>
+      <div class="competitor">
+        <div class="name">Apple Calendar</div>
+        <div class="pros">+ Clean, simple, native</div>
+        <div class="cons">- Too bare, no habit/goal tracking, no task integration</div>
+      </div>
+    </div>
+    <p>None of these offer <span class="underline-red">multi-calendar views</span> (1-day, 3-day, week, month, year in one app), integrated habits, journaling, goals, and an AI assistant — all in one interface that actually feels calm.</p>
+    <p class="red-comment">/* the gap: something between "too bare" and "too much" */</p>
+  </div>
+
+  <div class="section-content" id="section-2">
+    <h2>User Personas</h2>
+    <div class="persona">
+      <div class="persona-header">
+        <span class="persona-name">Maya — The Overwhelmed College Student</span>
+        <span class="persona-meta">Age 20 · Pre-med · MacBook + iPhone</span>
+      </div>
+      <p>Juggles 6 classes, tutoring, MCAT prep, and a social life. She's tried Notion (too complex), Google Calendar (too clinical), and paper planners (can't search them).</p>
+      <p><b>Needs:</b> One place to dump everything, drag tasks onto her calendar when ready, mood tracking to catch burnout.</p>
+      <div class="persona-quote">"I just need to get everything out of my head and into one place that doesn't stress me out more."</div>
+    </div>
+    <div class="persona">
+      <div class="persona-header">
+        <span class="persona-name">Jordan — The Early-Career Freelancer</span>
+        <span class="persona-meta">Age 27 · UX Designer · MacBook Pro</span>
+      </div>
+      <p>Manages 3-4 client projects with different deadlines. Uses Todoist + Google Calendar + Miro but hates switching apps.</p>
+      <p><b>Needs:</b> Color-coded calendars per client, recurring events, notes for project ideas, quarterly goals.</p>
+      <div class="persona-quote">"I want my planner to feel like mine, not like a project management tool my boss picked."</div>
+    </div>
+    <div class="persona">
+      <div class="persona-header">
+        <span class="persona-name">Alex — The Structured Student with ADHD</span>
+        <span class="persona-meta">Age 22 · CS Major · Windows + iPhone</span>
+      </div>
+      <p>Hard time holding tasks in working memory. If it's not written down immediately, it's gone. Needs the lowest-friction capture possible.</p>
+      <p><b>Needs:</b> Instant task capture, visual time-blocking, voice input, simple 1-day view when the full week is too much.</p>
+      <div class="persona-quote">"If I can't add it in under 5 seconds, I won't use it."</div>
+    </div>
+  </div>
+
+  <div class="section-content" id="section-3">
+    <h2>Design Process</h2>
+    <p>I followed my <span class="hl">BOLDER</span> framework throughout this project:</p>
+    <p><b>Brainstorm</b> — identified the core frustration: why do I keep abandoning planners? Because they either do too little or make me feel like I'm configuring a spaceship.</p>
+    <p><b>Outline</b> — scoped the MVP: calendar with multiple views, brain dump sidebar, drag-and-drop scheduling, habits, journal, goals. Cut scope aggressively — no sharing, no notifications, no mobile app (web-first).</p>
+    <p><b>Layout</b> — referenced Google Calendar's grid structure but stripped the visual noise. Established a warm, muted color palette that feels like opening a journal, not a dashboard.</p>
+    <p><b>Develop</b> — built the MVP. Functionality first, aesthetics second. Got the drag-and-drop working before touching colors.</p>
+    <p><b>Execute</b> — pushed it live, shared with friends and classmates for real feedback.</p>
+    <p><b>Refine</b> — iterated based on user feedback (cursor states, help button requests, email verification bugs). Still looping.</p>
+    <p class="red-comment">/* the loop never really ends */</p>
+  </div>
+
+  <div class="section-content" id="section-4">
+    <h2>Key Design Decisions</h2>
+    <h3>Calendar Views</h3>
+    <p>Most calendar apps give you week and month. Oat gives you <span class="underline-red">five views</span> — because different tasks need different zoom levels.</p>
+    <table class="views-table">
+      <tr><th>View</th><th>Web</th><th>Mobile</th><th>Why</th></tr>
+      <tr><td><b>1-Day</b></td><td>Yes</td><td>Yes</td><td>Deep focus, hourly planning</td></tr>
+      <tr><td><b>3-Day</b></td><td>Yes</td><td>—</td><td>Short-term overview (too cramped on mobile)</td></tr>
+      <tr><td><b>2-Day</b></td><td>—</td><td>Yes</td><td>Mobile replacement for 3-day</td></tr>
+      <tr><td><b>Week</b></td><td>Yes</td><td>Yes</td><td>The default planning cadence</td></tr>
+      <tr><td><b>Month</b></td><td>Yes</td><td>Yes</td><td>Big picture, deadline awareness</td></tr>
+      <tr><td><b>Year</b></td><td>Yes</td><td>Yes</td><td>Long-term goal alignment</td></tr>
+    </table>
+    <div class="mockup-trio">
+      <div>
+        <div class="mockup-caption">Week view</div>
+        <div class="mockup"><img src="oat-assets/week-view.png" alt="Week view with 7-day grid"></div>
+      </div>
+      <div>
+        <div class="mockup-caption">1-Day view</div>
+        <div class="mockup"><img src="oat-assets/day-view.png" alt="Single day view with hourly grid"></div>
+      </div>
+      <div>
+        <div class="mockup-caption">Month view</div>
+        <div class="mockup"><img src="oat-assets/month-view.png" alt="Month view showing events across days"></div>
+      </div>
+    </div>
+    <div class="decision-grid">
+      <div class="decision">
+        <div class="dt">Brain Dump Sidebar</div>
+        <div class="dd">A <b>catch-all</b> for unscheduled tasks. Type it, forget about timing, drag it onto the calendar when ready. On mobile: bottom sheet.</div>
+      </div>
+      <div class="decision">
+        <div class="dt">Drag-and-Drop</div>
+        <div class="dd">Tasks go from dump to calendar via <b>drag-and-drop</b>. No modal, no form — just grab and place.</div>
+      </div>
+      <div class="decision">
+        <div class="dt">Swipe Nav (Mobile)</div>
+        <div class="dd">Swipe left/right to move between days. <b>Zero taps</b> for basic navigation.</div>
+      </div>
+      <div class="decision">
+        <div class="dt">Calm Visual Design</div>
+        <div class="dd">Warm, muted tones. The goal: <b>feel like opening a journal</b>, not a corporate dashboard.</div>
+      </div>
+      <div class="decision">
+        <div class="dt">AI Chat Assistant</div>
+        <div class="dd"><b>"Schedule gym MWF at 7am"</b> — natural language scheduling with voice input.</div>
+      </div>
+      <div class="decision">
+        <div class="dt">Keyboard Shortcuts</div>
+        <div class="dd"><b>Single-key access</b>: W for week, J for journal, H for habits, G for goals, N for notes.</div>
+      </div>
+    </div>
+    <div class="mockup-row">
+      <div>
+        <div class="mockup-caption">Brain dump + task panel</div>
+        <div class="mockup"><img src="oat-assets/tasks-panel.png" alt="Task panel with priority filters and calendar list"></div>
+      </div>
+      <div>
+        <div class="mockup-caption">AI chat assistant</div>
+        <div class="mockup"><img src="oat-assets/ai-chat.png" alt="Oat Assistant chat overlay with voice input"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-content" id="section-5">
+    <h2>Accessibility</h2>
+    <ul class="check-list">
+      <li><b>Font readability</b> — increased base font sizes for WCAG compliance, clear type hierarchy</li>
+      <li><b>Color contrast</b> — all text meets minimum contrast ratios against backgrounds</li>
+      <li><b>Keyboard navigation</b> — full keyboard shortcut system for all major features</li>
+      <li><b>Dark/light mode</b> — respects user preference, manually toggleable</li>
+      <li><b>Responsive layout</b> — web-first with adapted mobile views (3-day to 2-day, sidebar to bottom sheet)</li>
+      <li><b>Cursor states</b> — updated based on user feedback to clarify interactive elements</li>
+    </ul>
+    <div class="mockup-row">
+      <div>
+        <div class="mockup-caption">Mobile — week view</div>
+        <div class="mockup"><img src="oat-assets/mobile-calendar.png" alt="Mobile week view with bottom navigation"></div>
+      </div>
+      <div>
+        <div class="mockup-caption">Mobile — landing page</div>
+        <div class="mockup"><img src="oat-assets/mobile-landing.png" alt="Mobile landing page responsive layout"></div>
+      </div>
+    </div>
+    <p class="red-comment">/* accessibility isn't a feature — it's a baseline */</p>
+  </div>
+
+  <div class="section-content" id="section-6">
+    <h2>User Feedback</h2>
+    <div class="feedback">
+      <p>"Really fits with the whole vibe of the app — clean and simple. Everything within the app is very practical!"</p>
+      <div class="source">— Beta tester, March 2026</div>
+    </div>
+    <div class="feedback">
+      <p>"The UI is slick and readable. I also love the oat-related puns! I would want a 'help' button that opens a modal that explains the functionality/features."</p>
+      <div class="source">— Beta tester, March 2026</div>
+    </div>
+    <div class="feedback">
+      <p>"So many meaningful features. The product is already impressive. Keep going."</p>
+      <div class="source">— Beta tester, April 2026</div>
+    </div>
+    <div class="feedback">
+      <p>"I don't typically use a calendar day to day... I should just tell AI to update my calendar and arrange events itself, and notify me."</p>
+      <div class="source">— Beta tester, March 2026</div>
+    </div>
+    <p class="red-comment" style="margin-top:10px">/* feedback drove real changes: cursor states, email verification fix, help affordances */</p>
+  </div>
+
+  <div class="section-content" id="section-7">
+    <h2>Iteration</h2>
+    <p>Key changes driven by real usage and feedback:</p>
+    <ul class="check-list">
+      <li><b>Cursor feedback</b> — testers didn't know what was clickable. Added proper cursor states across all interactive elements.</li>
+      <li><b>Email verification</b> — verify button was redirecting to reset password. Fixed the redirect flow.</li>
+      <li><b>3-day to 2-day on mobile</b> — 3 columns were too cramped on phone screens. Switched to 2-day with swipe navigation.</li>
+      <li><b>Brain Dump rename</b> — explored renaming for clarity, landed on keeping it as a recognizable concept.</li>
+      <li><b>Drag-and-drop priority reorder</b> — originally tasks auto-sorted by priority. Added manual reorder within the same priority level.</li>
+      <li><b>Font and line weight</b> — increased darkness across fonts and outlines after accessibility review.</li>
+    </ul>
+    <div class="mockup-caption">Habits tracker — weekly check-off grid</div>
+    <div class="mockup"><img src="oat-assets/habits.png" alt="Habits modal with weekly check-off grid"></div>
+    <p class="red-comment">/* still looping — always refining */</p>
+  </div>
+
+  <div class="modal-overlay" id="overlay">
+    <button class="modal-nav modal-nav--prev" id="prevBtn" aria-label="Previous section">&#8592;</button>
+    <div class="modal" id="modal">
+      <button class="modal-close" id="closeBtn" aria-label="Close">&#215;</button>
+      <div id="modalContent"></div>
+    </div>
+    <button class="modal-nav modal-nav--next" id="nextBtn" aria-label="Next section">&#8594;</button>
+  </div>
+
+  <script>
+    const TOTAL = 8;
+    let currentIndex = 0;
+    const overlay = document.getElementById('overlay');
+    const modal = document.getElementById('modal');
+    const modalContent = document.getElementById('modalContent');
+
+    function openSection(index) {
+      currentIndex = index;
+      var source = document.getElementById('section-' + index);
+      if (!source) return;
+      modalContent.textContent = '';
+      var clone = source.cloneNode(true);
+      clone.style.display = 'block';
+      modalContent.appendChild(clone);
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+      modalContent.textContent = '';
+    }
+
+    function navigate(dir) {
+      currentIndex = (currentIndex + dir + TOTAL) % TOTAL;
+      var source = document.getElementById('section-' + currentIndex);
+      if (!source) return;
+      modalContent.textContent = '';
+      var clone = source.cloneNode(true);
+      clone.style.display = 'block';
+      modalContent.appendChild(clone);
+      modal.scrollTop = 0;
+    }
+
+    document.querySelectorAll('.sticky').forEach(function(el) {
+      el.addEventListener('click', function() {
+        var idx = parseInt(el.dataset.index, 10);
+        openSection(idx);
+      });
+    });
+
+    document.getElementById('closeBtn').addEventListener('click', closeModal);
+    document.getElementById('prevBtn').addEventListener('click', function() { navigate(-1); });
+    document.getElementById('nextBtn').addEventListener('click', function() { navigate(1); });
+
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) closeModal();
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (!overlay.classList.contains('open')) return;
+      if (e.key === 'Escape') closeModal();
+      if (e.key === 'ArrowLeft') navigate(-1);
+      if (e.key === 'ArrowRight') navigate(1);
+    });
+  </script>
+</body>
+</html>

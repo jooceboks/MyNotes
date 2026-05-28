@@ -1,9 +1,10 @@
-const TAB_ORDER = ['home', 'about', 'coding', 'creatives', 'leadership', 'skills'];
+const TAB_ORDER = ['home', 'about', 'coding', 'creatives', 'impact', 'skills'];
 const TAB_ALIASES = {
   code: 'coding',
   creative: 'creatives',
   design: 'creatives',
-  lead: 'leadership',
+  lead: 'impact',
+  leadership: 'impact',
 };
 
 const tabs = Array.from(document.querySelectorAll('.tab'));

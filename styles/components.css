@@ -82,7 +82,6 @@ h1.title{
 
 .panels{
   position:relative;
-  display:grid;
 }
 
 .panel h2{
@@ -232,6 +231,11 @@ b{font-weight:700}
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:0 28px;
+}
+
+.skills.three-col{
+  grid-template-columns:1fr 1fr 1fr;
+  gap:0 20px;
 }
 
 .skills .col{
@@ -504,6 +508,62 @@ b{font-weight:700}
   margin-top:8px;
 }
 
+.case-studies{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin:0 0 14px;
+}
+
+.case-card{
+  border:1px solid var(--rule);
+  border-radius:6px;
+  padding:14px 16px;
+  background:rgba(255,255,255,.3);
+  display:flex;
+  flex-direction:column;
+}
+
+.case-tag{
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.1em;
+  color:var(--red);
+  font-weight:700;
+  margin-bottom:6px;
+}
+
+.case-title{
+  font-size:15px;
+  font-weight:700;
+  color:var(--ink);
+  margin-bottom:4px;
+}
+
+.case-desc{
+  font-size:12px;
+  line-height:1.5;
+  color:var(--ink-soft);
+  margin:0 0 8px;
+}
+
+.case-tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:4px;
+  margin-bottom:8px;
+}
+
+.case-tags span{
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.04em;
+  padding:2px 6px;
+  border:1px solid var(--rule);
+  background:var(--paper);
+  color:var(--ink);
+}
+
 .portfolio-card{
   display:block;
   text-decoration:none;
@@ -516,7 +576,6 @@ b{font-weight:700}
   transition:box-shadow 120ms ease;
 }
 
-.portfolio-card:hover{box-shadow:0 2px 8px rgba(0,0,0,.1)}
 
 .portfolio-label{
   display:block;
@@ -550,10 +609,64 @@ b{font-weight:700}
   color:var(--red);
   font-weight:700;
   letter-spacing:.03em;
+  text-decoration:none;
+  border-bottom:1px solid transparent;
+  padding-bottom:1px;
+  transition:border-color 80ms;
 }
+
+.portfolio-cta:hover{border-bottom:1px dotted var(--red)}
 
 .cert-link{text-decoration:none;color:inherit}
 .cert-link:hover{text-decoration:underline;text-decoration-style:dotted;text-decoration-color:var(--red);text-underline-offset:3px}
+
+.impact-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin:0 0 14px;
+}
+
+.stat-card{
+  border:1px solid var(--rule);
+  padding:16px 18px;
+  background:rgba(255,255,255,.3);
+}
+
+.stat-card-wide{
+  grid-column:1 / -1;
+}
+
+.stat-title{
+  display:block;
+  font-size:18px;
+  font-weight:700;
+  color:var(--red);
+  letter-spacing:.02em;
+  line-height:1.2;
+  margin-bottom:8px;
+}
+
+.stat-desc{
+  font-size:12.5px;
+  line-height:1.55;
+  color:var(--ink-soft);
+  margin:0;
+}
+
+.stat-desc b{color:var(--ink);font-weight:700}
+
+.stat-tag{
+  display:inline-block;
+  margin-top:8px;
+  font-size:10.5px;
+  font-weight:700;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:var(--red);
+  border:1px solid var(--red);
+  padding:2px 7px;
+}
 
 .footer .bullet{color:var(--ink-soft);font-weight:400}
 
@@ -564,7 +677,11 @@ b{font-weight:700}
   .tab:nth-child(n+4){border-bottom:none}
   .tab .n{display:none}
   .skills{grid-template-columns:1fr}
+  .skills.three-col{grid-template-columns:1fr}
   .design-cred{grid-template-columns:1fr}
   .meta{grid-template-columns:1fr}
+  .case-studies{grid-template-columns:1fr}
   .gallery{grid-template-columns:1fr}
+  .impact-grid{grid-template-columns:1fr}
+  .stat-card-wide{grid-column:auto}
 }
