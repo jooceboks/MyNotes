@@ -12,6 +12,23 @@
   50%{opacity:0}
 }
 
+/* === Typewriter title === */
+.title .typewriter{
+  display:inline;
+  border-right:2px solid var(--ink);
+  animation:blink-caret .7s steps(2) infinite;
+}
+
+.title.typing .typewriter{
+  overflow:hidden;
+  white-space:nowrap;
+}
+
+@keyframes blink-caret{
+  50%{border-color:transparent}
+}
+
+/* === Panel states === */
 .panel{
   position:absolute;
   top:0;
@@ -37,29 +54,112 @@
   pointer-events:none;
   z-index:3;
   background:var(--paper);
-  box-shadow:-6px 6px 0 rgba(0,0,0,.03), -14px 16px 22px -8px rgba(0,0,0,.22);
+  box-shadow:-4px 8px 24px -6px rgba(0,0,0,.25), 0 2px 6px rgba(0,0,0,.06);
   padding:0;
-  animation:peelOff 620ms cubic-bezier(.45,.05,.6,.95) forwards;
+  transform-origin:bottom left;
+  animation:stickyRip 500ms cubic-bezier(.32,.06,.62,.98) forwards;
 }
 
-@keyframes peelOff{
-  0%{transform:translate(0,0) rotate(0deg); opacity:1}
-  35%{transform:translate(2%, -2%) rotate(2deg) scale(1.005); opacity:1}
-  100%{transform:translate(70%, -38%) rotate(14deg) scale(.94); opacity:0}
+@keyframes stickyRip{
+  0%{
+    transform:rotate(0deg) translateY(0);
+    opacity:1;
+    box-shadow:-4px 8px 24px -6px rgba(0,0,0,.25);
+  }
+  25%{
+    transform:rotate(-3deg) translateY(-8px);
+    opacity:1;
+    box-shadow:-6px 14px 28px -6px rgba(0,0,0,.22);
+  }
+  60%{
+    transform:rotate(-8deg) translateY(-40px) translateX(-20px);
+    opacity:.9;
+    box-shadow:-8px 18px 32px -8px rgba(0,0,0,.18);
+  }
+  100%{
+    transform:rotate(-14deg) translateY(-80px) translateX(-60px) scale(.95);
+    opacity:0;
+    box-shadow:none;
+  }
 }
 
 .panel.entering{
-  animation:settle 380ms ease-out both;
+  animation:slapDown 350ms cubic-bezier(.22,.68,.36,1.1) both;
 }
 
-@keyframes settle{
-  0%{transform:translateY(-2px); opacity:.85}
-  100%{transform:translateY(0); opacity:1}
+@keyframes slapDown{
+  0%{
+    transform:translateY(10px) rotate(1.5deg) scale(.98);
+    opacity:0;
+  }
+  50%{
+    opacity:1;
+  }
+  75%{
+    transform:translateY(-2px) rotate(-.3deg) scale(1.005);
+  }
+  100%{
+    transform:translateY(0) rotate(0) scale(1);
+    opacity:1;
+  }
 }
 
+/* === Staggered content fade-in === */
+.panel.active > *{
+  animation:fadeSlideUp 400ms ease-out both;
+}
+
+.panel.active > *:nth-child(1){animation-delay:60ms}
+.panel.active > *:nth-child(2){animation-delay:120ms}
+.panel.active > *:nth-child(3){animation-delay:180ms}
+.panel.active > *:nth-child(4){animation-delay:240ms}
+.panel.active > *:nth-child(5){animation-delay:300ms}
+.panel.active > *:nth-child(6){animation-delay:360ms}
+.panel.active > *:nth-child(7){animation-delay:400ms}
+.panel.active > *:nth-child(8){animation-delay:440ms}
+.panel.active > *:nth-child(9){animation-delay:470ms}
+.panel.active > *:nth-child(n+10){animation-delay:500ms}
+
+@keyframes fadeSlideUp{
+  0%{opacity:0; transform:translateY(12px)}
+  100%{opacity:1; transform:translateY(0)}
+}
+
+/* === Card tilt on hover === */
+.peek-thumb,
+.proj,
+.case-card,
+.stat-card{
+  transition:transform 200ms ease, box-shadow 200ms ease;
+}
+
+.peek-thumb:hover{
+  transform:perspective(600px) rotateY(-2deg) rotateX(1deg) translateY(-2px);
+  box-shadow:4px 6px 16px rgba(0,0,0,.1);
+}
+
+/* === Tape wobble === */
+.tape{
+  transition:transform 300ms ease;
+}
+
+.tape:hover{
+  transform:translateX(-50%) rotate(1deg) scaleX(1.03);
+}
+
+/* === Link underline slide === */
+.proj-link,
+.portfolio-cta,
+.footer a{
+  position:relative;
+}
+
+/* === Reduced motion === */
 @media (prefers-reduced-motion: reduce){
   .panel.peeling,
   .panel.entering{animation:none !important}
   .panel.peeling{opacity:0 !important}
+  .panel.active > *{animation:none !important}
   .cursor{animation:none}
+  .title .typewriter{animation:none}
 }

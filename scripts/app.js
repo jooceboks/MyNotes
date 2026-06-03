@@ -82,7 +82,7 @@ function activate(name, options = {}) {
 
   const cleanup = () => finishTransition(curr, next);
   curr.addEventListener('animationend', cleanup, { once: true });
-  window.setTimeout(cleanup, 900);
+  window.setTimeout(cleanup, 700);
 }
 
 async function loadPanels() {
@@ -160,11 +160,40 @@ window.addEventListener('hashchange', () => {
   }
 });
 
+function typewriterEffect() {
+  const title = document.querySelector('.title');
+  if (!title || sessionStorage.getItem('sjl-typed')) {
+    return;
+  }
+
+  const full = title.innerHTML;
+  title.innerHTML = '';
+  title.classList.add('typing');
+
+  const plainText = title.textContent;
+  let i = 0;
+
+  function type() {
+    if (i <= plainText.length) {
+      title.textContent = plainText.slice(0, i);
+      i++;
+      setTimeout(type, 45 + Math.random() * 35);
+    } else {
+      title.innerHTML = full;
+      title.classList.remove('typing');
+      sessionStorage.setItem('sjl-typed', '1');
+    }
+  }
+
+  setTimeout(type, 400);
+}
+
 async function bootstrap() {
   await loadPanels();
 
   const initialTab = resolveInitialTab();
   activate(initialTab, { instant: true, force: true });
+  typewriterEffect();
 }
 
 bootstrap().catch((error) => {
