@@ -19,6 +19,40 @@
     </div>
   </div>
 
+  <div class="proj" id="project-cryptocorr">
+    <div class="proj-thumb">
+      <img src="assets/proj-cryptocorr.png" alt="CryptoCorr ETH/SOL vs BTC regression charts" loading="lazy" />
+    </div>
+    <div class="proj-body">
+      <div class="hd">
+        <span class="name">CryptoCorr — Crypto Risk &amp; Correlation Analysis</span>
+        <span class="tag">role: sole author · data science / quant</span>
+      </div>
+      <p>I built CryptoCorr to measure how much Ethereum and Solana actually depend on Bitcoin instead of moving on their own. I quantified systematic risk (Beta) with OLS and <b>90-day rolling regressions</b>, tested for non-linear behavior with an SVR model, and forecasted prices using <b>ARIMAX</b> with Bitcoin as an exogenous driver. The takeaway: ETH trades like BTC ×1.16 and SOL like BTC ×1.33 — altcoins behave as leveraged derivatives of Bitcoin, not independent assets.</p>
+      <div class="stack-tags">
+        <span>Python</span><span>Jupyter</span><span>pandas</span><span>NumPy</span><span>statsmodels</span><span>scikit-learn</span><span>yfinance</span><span>Matplotlib</span><span>seaborn</span>
+      </div>
+      <a class="proj-link" href="https://github.com/jooceboks/CryptoCorr" target="_blank" rel="noopener">↳ GitHub Repo</a>
+    </div>
+  </div>
+
+  <div class="proj" id="project-heatmapper">
+    <div class="proj-thumb">
+      <img src="assets/proj-heatmapper.png" alt="Heatmapper landing page" loading="lazy" />
+    </div>
+    <div class="proj-body">
+      <div class="hd">
+        <span class="name">Heatmapper — Options Intelligence &amp; Sentiment Platform</span>
+        <span class="tag">role: sole engineer · full-stack</span>
+      </div>
+      <p>I built Heatmapper to catch the moments when the crowd's mood and the options market disagree. It overlays <b>real-time sentiment</b> from news, Twitter, and Reddit on top of live options flow, then flags divergences when positioning contradicts the narrative. Under the hood it renders open interest, volume, IV, and price-probability heatmaps, runs VADER sentiment scoring on data scraped via Bright Data, and pushes <b>Web Push alerts</b> from a background scanner watching your watchlist.</p>
+      <div class="stack-tags">
+        <span>Python</span><span>FastAPI</span><span>Postgres</span><span>Plotly.js</span><span>Bright Data</span><span>VADER</span><span>yfinance</span><span>JWT Auth</span><span>Web Push</span><span>Docker</span>
+      </div>
+      <a class="proj-link" href="https://github.com/jooceboks/HeatmapperA" target="_blank" rel="noopener">↳ GitHub Repo</a>
+    </div>
+  </div>
+
    <div class="proj" id="project-iso">
     <div class="proj-thumb">
       <img src="assets/proj-iso.png" alt="Project Iso cleanroom" loading="lazy" />
